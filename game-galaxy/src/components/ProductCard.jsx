@@ -1,65 +1,71 @@
-// ProductCard.jsx - Solo la imagen es clickeable para ir a detalles
-import React from 'react';
-import StarRating from './StarRating';
-import PriceDisplay from './PriceDisplay';
+
 import FavoritesButton from './FavoritesButton';
 import AddToCartButton from './AddToCartButton';
 
 const ProductCard = ({ product, onViewDetails }) => {
+  
+  // Función para manejar el click en la imagen
+  const handleImageClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log('Image clicked!', product);
+    
+    if (onViewDetails && typeof onViewDetails === 'function') {
+      onViewDetails(product);
+    }
+  };
+
   return (
-    <div className="game-card-improved fade-in">
-      {/* Solo la imagen es clickeable para ir a detalles */}
-      <div className="game-image-container">
+    <div className="game-card-simple">
+      {/* SOLO la imagen es clickeable */}
+      <div className="image-container-simple">
         <img
           src={product.image}
           alt={product.title}
-          className="game-image cursor-pointer"
-          onClick={() => onViewDetails(product)}
-          title="Ver detalles del juego"
+          className="product-image-clickable"
+          onClick={handleImageClick}
+          title="Click para ver detalles"
         />
-        <div className="game-overlay"></div>
         
-        {/* Botón de favoritos - NO clickeable para detalles */}
-        <div className="absolute top-2 right-2 z-10">
+        {/* Elementos que NO interfieren con el click */}
+        <div className="favorites-corner">
           <FavoritesButton productId={product.id} productTitle={product.title} />
         </div>
         
-        {/* Badge de oferta - NO clickeable para detalles */}
         {product.hasDiscount && (
-          <div className="absolute top-2 left-2 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold z-10">
+          <div className="discount-badge">
             OFERTA
           </div>
         )}
       </div>
       
-      {/* Información del juego - NO clickeable para detalles */}
-      <div className="game-info">
-        <h3 className="game-title">{product.title}</h3>
+      {/* Información del producto - NO clickeable */}
+      <div className="product-info">
+        <h3 className="product-title">{product.title}</h3>
         
-        <div className="game-rating">
+        <div className="product-rating">
           <div className="stars">
             {[...Array(5)].map((_, index) => (
               <span
                 key={index}
-                className={`star ${index < Math.floor(product.rating) ? '' : 'empty'}`}
+                className={`star ${index < Math.floor(product.rating) ? 'filled' : 'empty'}`}
               >
                 ★
               </span>
             ))}
           </div>
-          <span className="text-sm opacity-75">({product.reviews})</span>
+          <span className="reviews-count">({product.reviews})</span>
         </div>
         
-        <div className="game-price">
+        <div className="product-price">
           ${product.price}
           {product.hasDiscount && product.originalPrice && (
-            <span className="text-sm opacity-60 line-through ml-2">
+            <span className="original-price">
               ${product.originalPrice}
             </span>
           )}
         </div>
         
-        {/* Botón de agregar al carrito - NO clickeable para detalles */}
         <AddToCartButton product={product} />
       </div>
     </div>

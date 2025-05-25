@@ -9,7 +9,8 @@ export const GAMES_DATA = [
     image: "/api/placeholder/300/400",
     description: "Master Chief returns in this epic sci-fi adventure. Experience the legendary Halo universe with stunning graphics and intense multiplayer combat.",
     category: "FPS",
-    hasDiscount: true
+    hasDiscount: true,
+    image: "https://media.revistagq.com/photos/61968f9cf654c19d66ebdd77/16:9/w_2560%2Cc_limit/Halo-Infinite.jpeg"
   },
   {
     id: 2,

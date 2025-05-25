@@ -1,34 +1,44 @@
-import React from 'react';
 import { Home, ShoppingCart } from '../icons';
 
 const Header = ({ currentView, onNavigate, itemCount }) => {
   return (
-    <header className="header-improved">
-      <div className="header-container">
-        <div className="logo-section">
-          <button className="hamburger-menu">
-            ☰
-          </button>
-          <button onClick={() => onNavigate('products')} className="logo-section">
-            <Home size={24} />
-            <h1 className="logo-title">GAME GALAXY</h1>
-          </button>
-        </div>
-        
-        <nav className="cart-section">
+    <header className="game-header">
+      <div className="header-content">
+        {/* Logo */}
+        <button onClick={() => onNavigate('products')} className="logo-btn">
+          <Home size={24} />
+          <span className="logo-text">GAME GALAXY</span>
+        </button>
+
+        {/* Navegación */}
+        <nav className="nav-menu">
           <button
-            onClick={() => onNavigate('cart')}
-            className="cart-button"
+            onClick={() => onNavigate('products')}
+            className={`nav-item ${currentView === 'products' ? 'active' : ''}`}
           >
-            <ShoppingCart size={20} />
-            <span>Carrito</span>
-            <span className="cart-count">{itemCount}</span>
+            🎮 Catálogo
+          </button>
+          <button className="nav-item">
+            🔥 Ofertas
           </button>
         </nav>
+
+        {/* Carrito */}
+        <button
+          onClick={() => onNavigate('cart')}
+          className={`cart-btn ${currentView === 'cart' ? 'active' : ''}`}
+        >
+          <div className="cart-icon">
+            <ShoppingCart size={20} />
+            {itemCount > 0 && (
+              <span className="cart-count">{itemCount}</span>
+            )}
+          </div>
+          <span>Carrito</span>
+        </button>
       </div>
     </header>
   );
 };
-
 
 export default Header;
