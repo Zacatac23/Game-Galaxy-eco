@@ -1,13 +1,18 @@
-import { useMemo } from "react";
-import { useCart } from "../context/CartContext";
+import React, { useMemo } from "react";
+import { useCart } from "../hooks/useCart";
 
 const TotalPrice = () => {
-  const { cart } = useCart();
+  const { items } = useCart();
   const total = useMemo(() => {
-    return cart.reduce((acc, p) => acc + p.price * p.quantity, 0).toFixed(2);
-  }, [cart]);
+    return items.reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(2);
+  }, [items]);
 
-  return <p>Total: ${total}</p>;
+  return (
+    <div className="total-price">
+      <span className="total-label">Total: </span>
+      <span className="total-amount">${total}</span>
+    </div>
+  );
 };
 
 export default TotalPrice;

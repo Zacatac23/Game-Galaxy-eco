@@ -1,4 +1,4 @@
-// CartPage.jsx - Versión mejorada
+// CartPage.jsx - Corregido
 import React, { useState } from 'react';
 import { ShoppingCart } from '../icons';
 import { useCart } from '../hooks/useCart';
@@ -6,7 +6,7 @@ import CartItem from '../components/CartItem';
 import ErrorMessage from '../components/ErrorMessage';
 
 const CartPage = () => {
-  const { items, cartTotal, clearCart } = useCart();
+  const { items, cartTotal, clearCart, removeFromCart } = useCart(); // Agregado removeFromCart
   const [showPurchaseModal, setShowPurchaseModal] = useState(false);
   const hasError = cartTotal > 999.99;
 
@@ -43,23 +43,11 @@ const CartPage = () => {
         
         <div className="space-y-4 mb-8">
           {items.map((item, index) => (
-            <div 
+            <CartItem 
               key={item.id} 
-              className="cart-item fade-in"
-              style={{ animationDelay: `${index * 0.1}s` }}
-            >
-              <img src={item.image} alt={item.title} className="cart-item-image" />
-              <div className="cart-item-info">
-                <h4 className="cart-item-name">{item.title}</h4>
-                <p className="cart-item-price">${item.price}</p>
-              </div>
-              <button
-                onClick={() => removeFromCart(item.id)}
-                className="text-red-400 hover:text-red-300 transition-colors font-medium"
-              >
-                Eliminar
-              </button>
-            </div>
+              item={item} 
+              index={index} // Pasado como prop al CartItem
+            />
           ))}
         </div>
         

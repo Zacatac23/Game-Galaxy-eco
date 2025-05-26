@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ArrowLeft } from '../icons';
 import StarRating from '../components/StarRating';
 import PriceDisplay from '../components/PriceDisplay';
@@ -7,7 +7,27 @@ import AddToCartButton from '../components/AddToCartButton';
 import Recommendations from '../components/Recommendations';
 
 const ProductDetailPage = ({ product, onBack, viewedProducts }) => {
+  const [userRating, setUserRating] = useState(0);
+  const [showThankYou, setShowThankYou] = useState(false);
+
   if (!product) return null;
+
+  // Función para manejar el cambio de rating del usuario
+  const handleUserRating = (newRating) => {
+    console.log('ProductDetailPage - handleUserRating called with:', newRating);
+    setUserRating(newRating);
+    console.log(`Usuario calificó ${product.title} con ${newRating} estrellas`);
+    
+    // Mostrar mensaje de agradecimiento
+    setShowThankYou(true);
+    setTimeout(() => setShowThankYou(false), 3000);
+  };
+
+  console.log('ProductDetailPage render:', { 
+    productTitle: product.title, 
+    userRating, 
+    showThankYou 
+  });
 
   return (
     <div className="game-detail-container fade-in">
@@ -34,18 +54,43 @@ const ProductDetailPage = ({ product, onBack, viewedProducts }) => {
             <FavoritesButton productId={product.id} productTitle={product.title} />
           </div>
           
+          {/* Rating actual del producto (no interactivo) */}
           <div className="game-rating mb-4">
-            <div className="stars">
-              {[...Array(5)].map((_, index) => (
-                <span
-                  key={index}
-                  className={`star text-xl ${index < Math.floor(product.rating) ? '' : 'empty'}`}
-                >
-                  ★
-                </span>
-              ))}
+            <div className="rating-section">
+              <span className="rating-label">Calificación del juego:</span>
+              <StarRating
+                rating={product.rating}
+                reviews={product.reviews}
+                isInteractive={false}
+                size={20}
+              />
             </div>
-            <span className="ml-2 opacity-75">({product.reviews} reseñas)</span>
+          </div>
+
+          {/* Rating del usuario (interactivo) */}
+          <div className="user-rating-section mb-6">
+            <div className="rating-section">
+              <span className="rating-label">Tu calificación:</span>
+              <StarRating
+                rating={userRating}
+                isInteractive={true}
+                onRatingChange={handleUserRating}
+                size={24}
+                showReviews={false}
+              />
+              {userRating > 0 && (
+                <span className="user-rating-text">
+                  Has calificado este juego con {userRating} estrella{userRating !== 1 ? 's' : ''}
+                </span>
+              )}
+            </div>
+            
+            {/* Mensaje de agradecimiento */}
+            {showThankYou && (
+              <div className="thank-you-message">
+                ¡Gracias por tu calificación! 🎉
+              </div>
+            )}
           </div>
           
           <div className="game-price mb-6">

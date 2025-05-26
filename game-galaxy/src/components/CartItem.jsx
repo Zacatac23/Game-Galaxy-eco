@@ -2,7 +2,7 @@
 import { useCart } from '../hooks/useCart';
 import QuantitySelector from './QuantitySelector';
 
-const CartItem = ({ item }) => {
+const CartItem = ({ item, index }) => { 
   const { updateQuantity, removeFromCart } = useCart();
 
   const handleIncreaseQuantity = () => {
@@ -14,12 +14,15 @@ const CartItem = ({ item }) => {
   };
 
   return (
-    <div className="flex items-center gap-4 p-4 border-b border-gray-200">
-      <img src={item.image} alt={item.title} className="w-16 h-16 object-cover rounded" />
+    <div 
+      className="cart-item fade-in"
+      style={{ animationDelay: `${index * 0.1}s` }} // Usando el prop index
+    >
+      <img src={item.image} alt={item.title} className="cart-item-image" />
       
-      <div className="flex-1">
-        <h4 className="font-medium text-gray-800">{item.title}</h4>
-        <p className="text-gray-600">${item.price}</p>
+      <div className="cart-item-info">
+        <h4 className="cart-item-name">{item.title}</h4>
+        <p className="cart-item-price">${item.price}</p>
       </div>
       
       <QuantitySelector

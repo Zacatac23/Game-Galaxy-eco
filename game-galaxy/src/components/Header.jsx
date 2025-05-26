@@ -1,6 +1,17 @@
+// Header.jsx - Actualizado para pasar la función de búsqueda
+import React from 'react';
 import { Home, ShoppingCart } from '../icons';
+import SearchBar from './SearchBar';
 
-const Header = ({ currentView, onNavigate, itemCount }) => {
+const Header = ({ currentView, onNavigate, itemCount, onSearch }) => {
+  
+  const handleSearch = (searchTerm) => {
+    console.log('Header - Búsqueda recibida:', searchTerm); // Debug
+    if (onSearch) {
+      onSearch(searchTerm);
+    }
+  };
+
   return (
     <header className="game-header">
       <div className="header-content">
@@ -22,6 +33,12 @@ const Header = ({ currentView, onNavigate, itemCount }) => {
             🔥 Ofertas
           </button>
         </nav>
+
+        {/* Barra de búsqueda */}
+        <SearchBar 
+          onSearch={handleSearch}
+          placeholder="Buscar juegos..."
+        />
 
         {/* Carrito */}
         <button

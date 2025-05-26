@@ -1,4 +1,4 @@
-// App.jsx - Version con debug
+// App.jsx - Actualizado con funcionalidad de búsqueda
 import React, { useState, useRef } from 'react';
 import { CartProvider } from './context/CartContext';
 import { useCart } from './hooks/useCart';
@@ -16,30 +16,19 @@ const CartConsumer = ({ children }) => {
 const App = () => {
   const [currentView, setCurrentView] = useState('products');
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [searchTerm, setSearchTerm] = useState(''); // Estado para búsqueda
   const viewedProductsRef = useRef([]);
 
-  // Debug: función handleViewDetails con logs
   const handleViewDetails = (product) => {
-    console.log('=== App.jsx - handleViewDetails called ===');
-    console.log('Product received:', product);
-    console.log('Current view:', currentView);
-    
     // Agregar a historial de productos vistos
     if (!viewedProductsRef.current.includes(product.id)) {
       viewedProductsRef.current.push(product.id);
-      console.log('Added to viewed products:', viewedProductsRef.current);
     }
-    
     setSelectedProduct(product);
     setCurrentView('details');
-    
-    console.log('Selected product set to:', product);
-    console.log('View changed to: details');
-    console.log('=== End handleViewDetails ===');
   };
 
   const handleNavigate = (view) => {
-    console.log('Navigate to:', view);
     setCurrentView(view);
     if (view !== 'details') {
       setSelectedProduct(null);
@@ -52,11 +41,15 @@ const App = () => {
     setSelectedProduct(null);
   };
 
-  // Debug: log current state
-  console.log('=== App.jsx Render ===');
-  console.log('Current view:', currentView);
-  console.log('Selected product:', selectedProduct);
-  console.log('handleViewDetails function:', handleViewDetails);
+  // Manejar búsqueda desde el Header
+  const handleSearch = (term) => {
+    console.log('App - Búsqueda recibida:', term); // Debug
+    setSearchTerm(term);
+    // Si estamos en otra vista, volver a productos para mostrar resultados
+    if (currentView !== 'products') {
+      setCurrentView('products');
+    }
+  };
 
   return (
     <CartProvider>
@@ -67,16 +60,20 @@ const App = () => {
               currentView={currentView} 
               onNavigate={handleNavigate}
               itemCount={itemCount}
+              onSearch={handleSearch} // Pasar función de búsqueda
             />
           )}
         </CartConsumer>
         
         <main className="relative">
           {currentView === 'products' && (
-            <ProductListPage onViewDetails={handleViewDetails} />
+            <ProductListPage 
+              onViewDetails={handleViewDetails}
+              searchTerm={searchTerm} // Pasar término de búsqueda
+            />
           )}
           
-          {currentView === 'details' && selectedProduct && (
+          {currentView === 'details' && (
             <ProductDetailPage 
               product={selectedProduct}
               onBack={handleBackToProducts}

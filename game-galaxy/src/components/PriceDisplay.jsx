@@ -1,11 +1,11 @@
-
+import React from 'react';
 
 const PriceDisplay = ({ price, originalPrice, hasDiscount }) => {
   return (
-    <div className="flex items-center gap-2">
-      <span className="text-lg font-bold text-green-600">${price}</span>
+    <div className="price-display">
+      <span className="current-price">${price}</span>
       {hasDiscount && originalPrice && (
-        <span className="text-sm text-gray-500 line-through">${originalPrice}</span>
+        <span className="original-price">${originalPrice}</span>
       )}
     </div>
   );
