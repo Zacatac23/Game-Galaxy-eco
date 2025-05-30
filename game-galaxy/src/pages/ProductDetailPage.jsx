@@ -6,11 +6,23 @@ import FavoritesButton from '../components/FavoritesButton';
 import AddToCartButton from '../components/AddToCartButton';
 import Recommendations from '../components/Recommendations';
 
-const ProductDetailPage = ({ product, onBack, viewedProducts }) => {
+const ProductDetailPage = ({ 
+  product, 
+  onBack, 
+  viewedProducts,
+  allGames = [] // ← Agregar este prop para pasar todos los juegos
+}) => {
   const [userRating, setUserRating] = useState(0);
   const [showThankYou, setShowThankYou] = useState(false);
 
   if (!product) return null;
+
+  // Debug: verificar datos recibidos
+  console.log('ProductDetailPage props:', {
+    productId: product.id,
+    allGamesCount: allGames.length,
+    viewedProductsCount: viewedProducts?.length || 0
+  });
 
   // Función para manejar el cambio de rating del usuario
   const handleUserRating = (newRating) => {
@@ -30,91 +42,171 @@ const ProductDetailPage = ({ product, onBack, viewedProducts }) => {
   });
 
   return (
-    <div className="game-detail-container fade-in">
-      <button
-        onClick={onBack}
-        className="flex items-center gap-2 text-red-400 hover:text-red-300 mb-6 transition-colors"
-      >
-        <ArrowLeft size={20} />
-        <span className="font-medium">Volver a productos</span>
-      </button>
+    <div className="product-detail-page fade-in">
+      {/* Header con botón de regreso mejorado */}
+      <div className="detail-header">
+        <button
+          onClick={onBack}
+          className="back-button group"
+        >
+          <div className="back-icon-wrapper">
+            <ArrowLeft size={20} />
+          </div>
+          <span className="back-text">Volver a productos</span>
+        </button>
+      </div>
       
-      <div className="game-detail-grid">
-        <div className="bounce-in">
-          <img
-            src={product.image}
-            alt={product.title}
-            className="game-detail-image"
-          />
+      {/* Contenedor principal con mejor layout */}
+      <div className="detail-container">
+        {/* Sección de imagen mejorada */}
+        <div className="image-section bounce-in">
+          <div className="image-wrapper">
+            <img
+              src={product.image}
+              alt={product.title}
+              className="detail-image"
+            />
+            <div className="image-overlay">
+              <div className="image-badges">
+                {product.hasDiscount && (
+                  <div className="discount-badge-large">
+                    <span className="discount-text">OFERTA</span>
+                    <span className="discount-percentage">
+                      -{Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}%
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
         </div>
         
-        <div className="game-detail-info fade-in" style={{ animationDelay: '0.2s' }}>
-          <div className="flex items-start justify-between mb-4">
-            <h1 className="game-detail-title">{product.title}</h1>
-            <FavoritesButton productId={product.id} productTitle={product.title} />
-          </div>
-          
-          {/* Rating actual del producto (no interactivo) */}
-          <div className="game-rating mb-4">
-            <div className="rating-section">
-              <span className="rating-label">Calificación del juego:</span>
-              <StarRating
-                rating={product.rating}
-                reviews={product.reviews}
-                isInteractive={false}
-                size={20}
+        {/* Sección de información mejorada */}
+        <div className="info-section fade-in" style={{ animationDelay: '0.2s' }}>
+          {/* Header del producto */}
+          <div className="product-header">
+            <div className="title-section">
+              <h1 className="product-title">{product.title}</h1>
+              <div className="category-badge">
+                <span className="category-icon">🎮</span>
+                <span className="category-text">{product.category}</span>
+              </div>
+            </div>
+            <div className="favorite-section">
+              <FavoritesButton 
+                productId={product.id} 
+                productTitle={product.title}
+                productImage={product.image}
+                productPrice={product.price}
               />
             </div>
           </div>
+          
+          {/* Sección de ratings mejorada */}
+          <div className="ratings-container">
+            {/* Rating oficial */}
+            <div className="official-rating-card">
+              <div className="rating-header">
+                <span className="rating-icon">⭐</span>
+                <span className="rating-label">Calificación oficial</span>
+              </div>
+              <div className="rating-content">
+                <StarRating
+                  rating={product.rating}
+                  reviews={product.reviews}
+                  isInteractive={false}
+                  size={20}
+                />
+              </div>
+            </div>
 
-          {/* Rating del usuario (interactivo) */}
-          <div className="user-rating-section mb-6">
-            <div className="rating-section">
-              <span className="rating-label">Tu calificación:</span>
-              <StarRating
-                rating={userRating}
-                isInteractive={true}
-                onRatingChange={handleUserRating}
-                size={24}
-                showReviews={false}
-              />
-              {userRating > 0 && (
-                <span className="user-rating-text">
-                  Has calificado este juego con {userRating} estrella{userRating !== 1 ? 's' : ''}
-                </span>
+            {/* Rating del usuario */}
+            <div className="user-rating-card">
+              <div className="rating-header">
+                <span className="rating-icon">👤</span>
+                <span className="rating-label">Tu calificación</span>
+              </div>
+              <div className="rating-content">
+                <StarRating
+                  rating={userRating}
+                  isInteractive={true}
+                  onRatingChange={handleUserRating}
+                  size={24}
+                  showReviews={false}
+                />
+                {userRating > 0 && (
+                  <div className="user-rating-feedback">
+                    <span className="feedback-icon">✨</span>
+                    <span className="feedback-text">
+                      Has calificado este juego con {userRating} estrella{userRating !== 1 ? 's' : ''}
+                    </span>
+                  </div>
+                )}
+              </div>
+              
+              {/* Mensaje de agradecimiento mejorado */}
+              {showThankYou && (
+                <div className="thank-you-card">
+                  <div className="thank-you-icon">🎉</div>
+                  <div className="thank-you-content">
+                    <h4>¡Gracias por tu calificación!</h4>
+                    <p>Tu opinión nos ayuda a mejorar</p>
+                  </div>
+                </div>
               )}
             </div>
-            
-            {/* Mensaje de agradecimiento */}
-            {showThankYou && (
-              <div className="thank-you-message">
-                ¡Gracias por tu calificación! 🎉
+          </div>
+          
+          {/* Sección de precio mejorada */}
+          <div className="price-section">
+            <div className="price-container">
+              <div className="current-price">
+                <span className="currency">$</span>
+                <span className="amount">{product.price}</span>
               </div>
-            )}
+              {product.hasDiscount && product.originalPrice && (
+                <div className="price-comparison">
+                  <span className="original-price">
+                    <span className="original-label">Antes:</span>
+                    <span className="original-amount">${product.originalPrice}</span>
+                  </span>
+                  <div className="savings">
+                    <span className="savings-icon">💰</span>
+                    <span className="savings-text">
+                      Ahorras ${(product.originalPrice - product.price).toFixed(2)}
+                    </span>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
           
-          <div className="game-price mb-6">
-            ${product.price}
-            {product.hasDiscount && product.originalPrice && (
-              <span className="text-lg opacity-60 line-through ml-3">
-                ${product.originalPrice}
-              </span>
-            )}
+          {/* Descripción mejorada */}
+          <div className="description-section">
+            <h3 className="description-title">
+              <span className="description-icon">📖</span>
+              Descripción del juego
+            </h3>
+            <div className="description-content">
+              <p className="description-text">{product.description}</p>
+            </div>
           </div>
           
-          <p className="game-detail-description">{product.description}</p>
-          
-          <div className="mb-6">
-            <span className="inline-block bg-red-600 bg-opacity-20 text-red-300 px-4 py-2 rounded-full text-sm border border-red-600 border-opacity-30">
-              {product.category}
-            </span>
+          {/* Sección de acción mejorada */}
+          <div className="action-section">
+            <AddToCartButton product={product} />
           </div>
-          
-          <AddToCartButton product={product} />
         </div>
       </div>
       
-      <Recommendations currentProductId={product.id} viewedProducts={viewedProducts} />
+      {/* Recomendaciones - PASANDO TODOS LOS JUEGOS */}
+      <div className="recommendations-section">
+        <Recommendations 
+          currentProductId={product.id} 
+          viewedProducts={viewedProducts}
+          allGames={allGames} 
+        />
+      </div>
     </div>
   );
 };

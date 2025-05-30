@@ -1,4 +1,4 @@
-// App.jsx - Actualizado con funcionalidad de búsqueda
+// App.jsx - Actualizado con GAMES_DATA importado
 import React, { useState, useRef } from 'react';
 import { CartProvider } from './context/CartContext';
 import { useCart } from './hooks/useCart';
@@ -6,6 +6,7 @@ import Header from './components/Header';
 import ProductListPage from './pages/ProductListPage';
 import ProductDetailPage from './pages/ProductDetailPage';
 import CartPage from './pages/CartPage';
+import { GAMES_DATA } from './data/gamesData'; // ← Importar los datos de juegos
 
 // Cart Consumer Component
 const CartConsumer = ({ children }) => {
@@ -18,6 +19,13 @@ const App = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [searchTerm, setSearchTerm] = useState(''); // Estado para búsqueda
   const viewedProductsRef = useRef([]);
+
+  // Usar GAMES_DATA importado
+  const allGames = GAMES_DATA;
+
+  // Debug: verificar allGames
+  console.log('App - allGames count:', allGames.length);
+  console.log('App - sample game:', allGames[0]);
 
   const handleViewDetails = (product) => {
     // Agregar a historial de productos vistos
@@ -70,6 +78,7 @@ const App = () => {
             <ProductListPage 
               onViewDetails={handleViewDetails}
               searchTerm={searchTerm} // Pasar término de búsqueda
+              allGames={allGames} // Pasar juegos a ProductListPage
             />
           )}
           
@@ -78,6 +87,7 @@ const App = () => {
               product={selectedProduct}
               onBack={handleBackToProducts}
               viewedProducts={viewedProductsRef.current}
+              allGames={allGames} // ← CRÍTICO: Pasar todos los juegos para recomendaciones
             />
           )}
           
